@@ -34,6 +34,12 @@ io.on('connect', socket => {
     socket.on('joinGame', handleJoinGame);
 
     function handleJoinGame(roomName) {
+        console.log(!roomName)
+        if (!roomName) {
+            console.log("what")
+            socket.emit('unknownCode');
+            return
+        }
         //room is a set
         const room = io.sockets.adapter.rooms.get(roomName);
 
@@ -43,10 +49,10 @@ io.on('connect', socket => {
             numsockets = room.size
         }
 
-        if (numsockets === 0) {
-            socket.emit('unknownGame');
+        if (!room || numsockets === 0) {
+            socket.emit('unknownCode');
             return
-        } else if (numsockets >= 4){
+        } else if (numsockets >= 4) {
             socket.emit('tooManyPlayers');
             return
         }

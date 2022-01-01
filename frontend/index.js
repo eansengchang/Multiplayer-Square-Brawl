@@ -8,7 +8,7 @@ const PLAYER_SIZE = 20;
 
 boundaryWidth = 40;
 
-const socket = io.connect("https://squarebrawl.herokuapp.com/");
+const socket = io.connect("http://localhost:3000");
 
 socket.on("init", handleInit);
 socket.on("gameState", handleGameState)
