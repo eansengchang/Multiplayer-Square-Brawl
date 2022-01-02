@@ -34,7 +34,6 @@ io.on('connect', socket => {
     socket.on('joinGame', handleJoinGame);
 
     function handleJoinGame(roomName) {
-        console.log(!roomName)
         if (!roomName) {
             console.log("what")
             socket.emit('unknownCode');
