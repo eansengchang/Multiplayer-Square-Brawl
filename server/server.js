@@ -32,10 +32,28 @@ io.on('connect', socket => {
     socket.on('keyUp', handleKeyUp);
     socket.on('newGame', handleNewGame);
     socket.on('joinGame', handleJoinGame);
+    socket.on('disconnect', handleDisconnect)
+
+    function handleDisconnect() {
+        let roomName = socketRooms[socket.id];
+        if (!roomName) return;
+
+        //leave player from game
+        delete socketRooms[socket.id]
+        let playerId = socket.number
+        //delete state players and game players
+        delete game[roomName].state.players[playerId];
+        delete game[roomName].players[playerId];
+
+        //if no one in room
+        if (!io.sockets.adapter.rooms.get(roomName)) {
+            clearInterval(game[roomName].intervalId)
+            delete game[roomName]
+        }
+    }
 
     function handleJoinGame(roomName) {
         if (!roomName) {
-            console.log("what")
             socket.emit('unknownCode');
             return
         }
@@ -140,19 +158,23 @@ io.on('connect', socket => {
 
     function startNewGame(roomName) {
         //game stuff for easy use
-        game[roomName] = {}
-        game[roomName].state = initGame();
+        game[roomName] = {
+            state: initGame(),
+            engine: Engine.create(),
+            players: undefined,
+            boundaries: [],
+            bullets: [],
+            intervalId: undefined
+        }
         game[roomName].state.gameStarted = true;
-        let engine = Engine.create();
-        game[roomName].engine = engine
+
+        let engine = game[roomName].engine
         engine.gravity.y = GRAVITY;
-        game[roomName].bullets = []
 
         //get the hue from newly created state (first player's hue)
         let hue = game[roomName].state.players[1].hue
         game[roomName].players = { 1: new Player(300, 300, hue, engine.world, 1) };
 
-        game[roomName].boundaries = []
         game[roomName].boundaries.push(new Boundary(GAME_WIDTH / 2, GAME_HEIGHT, GAME_WIDTH, BOUNDARY_WIDTH, engine.world))
         game[roomName].boundaries.push(new Boundary(GAME_WIDTH / 2, 0, GAME_WIDTH, BOUNDARY_WIDTH, engine.world))
         game[roomName].boundaries.push(new Boundary(0, GAME_HEIGHT / 2, BOUNDARY_WIDTH, GAME_HEIGHT, engine.world))
@@ -161,7 +183,8 @@ io.on('connect', socket => {
         game[roomName].boundaries.push(new Boundary(GAME_WIDTH / 2, GAME_HEIGHT * 2 / 3, 400, 20, engine.world))
         game[roomName].boundaries.push(new Boundary(GAME_WIDTH / 2, GAME_HEIGHT - 50, 20, 100, engine.world))
 
-        const intervalId = setInterval(() => {
+
+        game[roomName].intervalId = setInterval(() => {
             const winner = gameLoop(game[roomName]);
 
             if (!winner) {
@@ -171,7 +194,6 @@ io.on('connect', socket => {
                 game[roomName] = null;
 
                 socketRooms[socket.id] = null;
-                clearInterval(intervalId);
             }
 
         }, DELTATIME);
