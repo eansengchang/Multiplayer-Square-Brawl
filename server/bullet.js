@@ -1,5 +1,5 @@
 const { Composite, Bodies, Body } = require('matter-js');
-const { HALF_PI } = require("./constants")
+const { HALF_PI, WEIRD_CONSTANT } = require("./constants")
 
 class Bullet {
 	constructor(x, y, heading, hue, world, id) {
@@ -25,8 +25,8 @@ class Bullet {
 		this.body = Bodies.circle(x + Math.cos(heading) * 20, y + Math.sin(heading) * 20, this.r / 2, options);
 
 		Body.setVelocity(this.body, {
-			x: Math.cos(heading) * 15,
-			y: Math.sin(heading) * 15
+			x: Math.cos(heading) * WEIRD_CONSTANT,
+			y: Math.sin(heading) * WEIRD_CONSTANT
 		})
 
 		Composite.add(world, this.body)

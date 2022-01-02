@@ -1,5 +1,11 @@
+const FRAME_RATE = 45
+
 module.exports = {
-    FRAME_RATE: 60,
+    FRAME_RATE,
+    DELTATIME: 1000 / FRAME_RATE,
+    GRAVITY: 2,
+    WEIRD_CONSTANT: 20,
+
     GAME_WIDTH: 800,
     GAME_HEIGHT: 600,
     BOUNDARY_WIDTH: 40,

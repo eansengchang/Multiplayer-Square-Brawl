@@ -3,7 +3,9 @@ module.exports = {
     gameLoop
 }
 
+
 const { Engine, Render, Runner, Body, Events, Composite, Composites, Common, Mouse, Bodies, Collision } = require('matter-js');
+const { FRAME_RATE, DELTATIME } = require('./constants');
 
 function initGame() {
     const state = createGameState()
@@ -66,7 +68,7 @@ function gameLoop(game) {
         }
     }
 
-    Engine.update(engine)
+    Engine.update(engine, DELTATIME)
 
     //updating the state to be sent
     for (const [key, value] of Object.entries(players)) {

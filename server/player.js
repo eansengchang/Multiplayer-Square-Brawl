@@ -1,5 +1,5 @@
 const { Composite, Bodies, Body, Collision } = require('matter-js')
-const { LEFT_KEY, UP_KEY, RIGHT_KEY, DOWN_KEY, JUMP_KEY, SHOOT_KEY, PI, TAU, GAME_HEIGHT, GAME_WIDTH } = require("./constants");
+const { LEFT_KEY, UP_KEY, RIGHT_KEY, DOWN_KEY, JUMP_KEY, SHOOT_KEY, PI, TAU, GAME_HEIGHT, GAME_WIDTH, WEIRD_CONSTANT } = require("./constants");
 const Bullet = require("./bullet")
 
 class Player {
@@ -40,13 +40,13 @@ class Player {
         //movement
         if (this.keyIsDown[LEFT_KEY]) { //move left
             Body.applyForce(this.body, this.body.position, {
-                x: -2 * this.body.velocity.x - 15,
+                x: -2 * this.body.velocity.x - WEIRD_CONSTANT,
                 y: 0
             })
         }
         if (this.keyIsDown[RIGHT_KEY]) { //move right
             Body.applyForce(this.body, this.body.position, {
-                x: -2 * this.body.velocity.x + 15,
+                x: -2 * this.body.velocity.x + WEIRD_CONSTANT,
                 y: 0
             })
         }
@@ -113,7 +113,7 @@ class Player {
             if (this.jumpCooldown + 150 > Date.now()) {
                 Body.setVelocity(this.body, {
                     x: this.body.velocity.x,
-                    y: Math.min(this.body.velocity.y, -15)
+                    y: Math.min(this.body.velocity.y, -WEIRD_CONSTANT)
                 })
             }
 

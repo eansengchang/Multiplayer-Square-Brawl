@@ -6,7 +6,7 @@ const io = require("socket.io")({
 });
 
 const { initGame, gameLoop } = require("./game");
-const { FRAME_RATE, GAME_WIDTH, GAME_HEIGHT, BOUNDARY_WIDTH } = require("./constants");
+const { FRAME_RATE, GAME_WIDTH, GAME_HEIGHT, BOUNDARY_WIDTH, GRAVITY, DELTATIME } = require("./constants");
 const { makeid } = require("./utils");
 
 const Matter = require('matter-js');
@@ -145,7 +145,7 @@ io.on('connect', socket => {
         game[roomName].state.gameStarted = true;
         let engine = Engine.create();
         game[roomName].engine = engine
-        engine.gravity.y = 2;
+        engine.gravity.y = GRAVITY;
         game[roomName].bullets = []
 
         //get the hue from newly created state (first player's hue)
@@ -174,7 +174,7 @@ io.on('connect', socket => {
                 clearInterval(intervalId);
             }
 
-        }, 1000 / FRAME_RATE);
+        }, DELTATIME);
     }
 })
 
